@@ -31,5 +31,6 @@ def test():
     R_pert_ini = 1
     V0 = 0
     Rini = array([R_pert_ini, V0]).reshape(-1, 1)
-    MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "marm", "vdw")
+    solver = MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "marm", "vdw")
+    solver.solve()
     assert 1 == 1
