@@ -1,5 +1,6 @@
 from numpy import array, size
 from scipy.interpolate import interp1d
+from math import pi
 
 __version__ = '1.0'
 
@@ -33,18 +34,30 @@ class MarmottantVanDerWaal:
         if self._bubble_eq == "marm":
             if self._R[0][0] < self._Rbuck:
                 self._SigmaR = 0
-            elif self._R[0][0] >= self._Rbuck and self._R[0] < self._Rbreak:
+            elif self._R[0][0] >= self._Rbuck and self._R[0][0] < self._Rbreak:
                 self._SigmaR = self._Chi * ((self._R[0][0] / self._Rbuck) ** 2 - 1)
             elif self._R[0][0] >= self._Rupt:
                 self._SigmaR = self._SigmaL
             else:
                 self._SigmaR = self._SigmaL
+        elif self._bubble_eq == "dejong":
+            self._SigmaR0 = self._SigmaL
+            self._KappaSh = self._KappaSh*16*pi
+            self._SigmaR = self._SigmaL+2*self._Chi*(self._R[0][0]*self._R0)*(1/self._R0-1/(self._R[0][0]*self._R0))
+        elif self._bubble_eq == "free":
+            self._KappaSh = 0
+            self._SigmaR = self._SigmaL
+            self._SigmaR0 = self._SigmaR
 
         if self._gas == "vdw":
             h = self._R0 / 5.6
             self._Rn[0] = self._R[1]
 
             self._Rn[1] = (1/(self._Rho * self._w ** 2 * self._R0 ** 2 * self._R[0][0])) * ((-3 / 2 * self._Rho * (self._R0 * self._w * self._R[1][0]) ** 2) + (self._P0 + 2 * self._SigmaR0 / self._R0) * (((self._R[0][0] * self._R0) ** 3 - h ** 3) / (self._R0 ** 3 - h ** 3)) ** (-self._KappaG) * (1 - 3 * self._KappaG / self._C * (self._R0 * self._w * self._R[1][0]) * (self._R[0][0] * self._R0) ** 3 / ((self._R[0][0] * self._R0) ** 3 - h ** 3)) - 2 * self._SigmaR / (self._R0 * self._R[0][0]) - 4 * self._Mu * self._w * self._R[1][0] / self._R[0][0] - 4 * self._KappaSh * self._w * self._R[1][0] / (self._R0 * self._R[0][0] ** 2) - (self._P0 + self._P0 * self._Pac))
+        elif self._gas == "ideal":
+            self._Rn[0] = self._R[1]
+
+            self._Rn[1] = (1 / (self._Rho * self._w ** 2 * self._R0 ** 2 * self._R[0][0])) * ((-3 / 2 * self._Rho * (self._R0 * self._w * self._R[1][0]) ** 2) + (self._P0 + 2 * self._SigmaR0 / self._R0) * (1 / self._R[0][0]) ** (3 * self._KappaG) * (1 - 3 * self._KappaG / self._C * self._R0 * self._w * self._R[1][0]) - 2 * self._SigmaR / (self._R0 * self._R[0][0]) - 4 * self._Mu * self._w * self._R[1][0] * self._R[0][0] - 4 * self._KappaSh * self._w * self._R[1][0] / (self._R0 * self._R[0][0] ** 2) - (self._P0 + self._P0 * self._Pac))
 
         self._Rn = self._Rn.flatten(1)
         print(self._Rn)
