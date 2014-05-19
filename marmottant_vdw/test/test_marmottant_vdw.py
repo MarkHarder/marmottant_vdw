@@ -1,6 +1,6 @@
 from nose.tools import *
 from marmottant_vdw.marmottant_vdw import MarmottantVanDerWaal
-from numpy import arange, array, zeros, size
+from numpy import arange, array, zeros, size, sin
 from math import pi
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -33,6 +33,28 @@ def test():
     R_pert_ini = 1
     V0 = 0
     Rini = array([R_pert_ini, V0]).reshape(-1, 1)
+
+    pulse_type = "sin"
+    Cycles = 3
+    Period = 2 * pi
+    T0 = Period * Cycles
+    PRP_vect = 0.1e6
+
+    if pulse_type == "sin":
+        pulse_window = array(zeros(len(T)))
+        for i, j in enumerate(T):
+            if j > 0 and j < T0:
+                pulse_window[i] = 1
+            else:
+                pulse_window[i] = 0
+
+    if pulse_type == "kzk":
+        pass
+    else:
+        PRP = PRP_vect
+        A = PRP / P0
+        P = -A * sin(w * t) * pulse_window
+
     solver = MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "marm", "vdw")
     solution, yinfo = solver.solve()
     print(solution)
@@ -42,7 +64,7 @@ def test():
     mpl.rc('ytick',labelsize='small')
     mpl.rc('legend',fontsize='small')
     plt.figure(1)
-    plt.plot(t,P[0],'bx')
+    plt.plot(t,P,'bx')
     plt.legend(('Numerical','Exact'))
     plt.xlabel(r'Time [s]')
     plt.ylabel(r'Position [m]')
