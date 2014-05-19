@@ -2,6 +2,8 @@ from nose.tools import *
 from marmottant_vdw.marmottant_vdw import MarmottantVanDerWaal
 from numpy import arange, array, zeros, size
 from math import pi
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 def test():
     # Simulation time
@@ -32,5 +34,17 @@ def test():
     V0 = 0
     Rini = array([R_pert_ini, V0]).reshape(-1, 1)
     solver = MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "marm", "vdw")
-    solver.solve()
+    solution, yinfo = solver.solve()
+    print(solution)
+    print(yinfo)
+    mpl.rc('font', family='serif', size=16)
+    mpl.rc('xtick',labelsize='small')
+    mpl.rc('ytick',labelsize='small')
+    mpl.rc('legend',fontsize='small')
+    plt.figure(1)
+    plt.plot(t,P[0],'bx')
+    plt.legend(('Numerical','Exact'))
+    plt.xlabel(r'Time [s]')
+    plt.ylabel(r'Position [m]')
+    plt.show()
     assert 1 == 1

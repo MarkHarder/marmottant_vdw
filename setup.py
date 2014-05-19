@@ -1,4 +1,5 @@
 from distutils.core import setup
+from setuptools.command.test import test as TestCommand
 import io
 import os
 import sys
@@ -18,8 +19,9 @@ def read(*filenames, **kwargs):
 
 long_description = read('README.txt')
 
-class PyTest():
+class PyTest(TestCommand):
     def finalize_options(self):
+        TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
@@ -33,6 +35,7 @@ setup(
     version=marmottant_vdw.marmottant_vdw.__version__,
     url='http://github.com/markharder/marmottant_vdw/',
     author='Mark Harder',
+    tests_require=['pytest'],
     cmdclass={'test': PyTest},
     description='Marmottant Van Der Waal bubble simulation',
     long_description=long_description,
