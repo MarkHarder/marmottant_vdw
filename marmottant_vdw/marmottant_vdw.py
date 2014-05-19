@@ -1,6 +1,7 @@
 from numpy import array, size
 from scipy.interpolate import interp1d
 from scipy.integrate import odeint
+from math import pi
 
 __version__ = '1.0'
 
@@ -43,12 +44,24 @@ class MarmottantVanDerWaal:
                 SigmaR = SigmaL
             else:
                 SigmaR = SigmaL
+        elif bubble_eq == "dejong":
+            SigmaR0 = SigmaL
+            KappaSh = KappaSh * 16 * pi
+            SigmaR = SigmaL + 2 * Chi * (R[0][0] * R0) * (1 / R0 - 1 / (R[0][0] * R0))
+        elif bubble_eq == "free":
+            KappaSh = 0
+            SigmaR = SigmaL
+            SigmaR0 = SigmaR
 
         if gas == "vdw":
             h = R0 / 5.6
             Rn[0] = R[1]
 
             Rn[1] = (1/(Rho * w ** 2 * R0 ** 2 * R[0][0])) * ((-3 / 2 * Rho * (R0 * w * R[1][0]) ** 2) + (P0 + 2 * SigmaR0 / R0) * (((R[0][0] * R0) ** 3 - h ** 3) / (R0 ** 3 - h ** 3)) ** (-KappaG) * (1 - 3 * KappaG / C * (R0 * w * R[1][0]) * (R[0][0] * R0) ** 3 / ((R[0][0] * R0) ** 3 - h ** 3)) - 2 * SigmaR / (R0 * R[0][0]) - 4 * Mu * w * R[1][0] / R[0][0] - 4 * KappaSh * w * R[1][0] / (R0 * R[0][0] ** 2) - (P0 + P0 * Pac))
+        elif gas == "ideal":
+            Rn[0] = R[1]
+
+            Rn[1] = (1 / (Rho * w ** 2 * R0 ** 2 * R[0][0])) * ((-3 / 2 * Rho * (R0 * w * R[1][0]) ** 2) + (P0 + 2 * SigmaR0 / R0) * (1 / R[0][0]) ** (3 * KappaG) * (1 - 3 * KappaG / C * R0 * w * R[1][0]) - 2 * SigmaR / (R0 * R[0][0]) - 4 * Mu * w * R[1][0] * R[0][0] - 4 * KappaSh * w * R[1][0] / (R0 * R[0][0] ** 2) - (P0 + P0 * Pac))
 
         Rn = Rn.flatten(1)
 
