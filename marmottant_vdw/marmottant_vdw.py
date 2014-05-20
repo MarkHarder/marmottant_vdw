@@ -61,9 +61,10 @@ class MarmottantVanDerWaal:
         elif gas == "ideal":
             Rn[0] = R[1]
 
-            Rn[1] = (1 / (Rho * w ** 2 * R0 ** 2 * R[0][0])) * ((-3 / 2 * Rho * (R0 * w * R[1][0]) ** 2) + (P0 + 2 * SigmaR0 / R0) * (1 / R[0][0]) ** (3 * KappaG) * (1 - 3 * KappaG / C * R0 * w * R[1][0]) - 2 * SigmaR / (R0 * R[0][0]) - 4 * Mu * w * R[1][0] * R[0][0] - 4 * KappaSh * w * R[1][0] / (R0 * R[0][0] ** 2) - (P0 + P0 * Pac))
+            Rn[1] = (1 / (Rho * w ** 2 * R0 ** 2 * R[0][0])) * ((-3 / 2 * Rho * (R0 * w * R[1][0]) ** 2) + (P0 + 2 * SigmaR0 / R0) * (1 / R[0][0]) ** (3 * KappaG) * (1 - 3 * KappaG / C * R0 * w * R[1][0]) - 2 * SigmaR / (R0 * R[0][0]) - 4 * Mu * w * R[1][0] / R[0][0] - 4 * KappaSh * w * R[1][0] / (R0 * R[0][0] ** 2) - (P0 + P0 * Pac))
 
         Rn = Rn.flatten(1)
+        return Rn
 
     def solve(self):
         Rini = [self._R_pert, self._V0]

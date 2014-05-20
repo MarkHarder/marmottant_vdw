@@ -10,7 +10,7 @@ def test():
     t = arange(0, 5, 0.001) * (10 ** -6)
     T = t * 2 * pi * 2.8e6
     P = zeros((1, size(t)))
-    R0 = 2e-6
+    R0 = 2*10e-6
     Rbuck = 0.99
     SigmaL = 0.073
     Chi = 0.38
@@ -30,7 +30,7 @@ def test():
     Rho = 998
     P0 = 101325
     C = 1481
-    R_pert_ini = 1
+    R_pert_ini = 1.001
     V0 = 0
     Rini = array([R_pert_ini, V0]).reshape(-1, 1)
 
@@ -55,16 +55,15 @@ def test():
         A = PRP / P0
         P = -A * sin(w * t) * pulse_window
 
-    solver = MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "marm", "vdw")
+    solver = MarmottantVanDerWaal(t, Rini, T, P, w, R0, Rbuck, Rrupt, Rbreak, KappaSh, Chi, SigmaR0, Rho, P0, SigmaL, C, Mu, KappaG, "free", "ideal")
     solution, yinfo = solver.solve()
-    print(solution)
-    print(yinfo)
+    print(solution[:,0])
     mpl.rc('font', family='serif', size=16)
     mpl.rc('xtick',labelsize='small')
     mpl.rc('ytick',labelsize='small')
     mpl.rc('legend',fontsize='small')
     plt.figure(1)
-    plt.plot(t,P,'bx')
+    plt.plot(t,solution[:,0],'bx')
     plt.legend(('Numerical','Exact'))
     plt.xlabel(r'Time [s]')
     plt.ylabel(r'Position [m]')
