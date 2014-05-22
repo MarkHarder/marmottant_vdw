@@ -32,7 +32,7 @@ def test():
     C = 1481
     R_pert_ini = 1.001
     V0 = 0
-    Rini = array([R_pert_ini, V0]).reshape(-1, 1)
+    Rini = array([R_pert_ini, V0])
 
     pulse_type = "sin"
     Cycles = 3
